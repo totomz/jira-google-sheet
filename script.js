@@ -1,13 +1,19 @@
 ///// SCRIPT CONFIGURATION /////
+
+// Credential for a JIRA user that have access to the REST API
 var jira_auth = "USER:PASSWORD";
+
+// The URL to the REST API of your JIRA instance
 var jira_endpoint = "https://YOU.atlassian.net/rest/api/2/";
+
+// JQL to get the list of issues. To list issues in a sprint not started, use "Sprint in futureSprints()"
 var jira_query = "Sprint in openSprints()"
 
 // Define the aggregations to calculate
 var metrics = [{
-  name: "Points per Category",
-  data: {},
-  func: function(issue){
+  name: "Points per Category",  // REQUIRED
+  data: {},                     // REQUIRED
+  func: function(issue){        // REQUIRED - function that perform th "groupBy" function and store the result in data
     var category = utils.getProjectCategory(issue);
     var storyPoint = issue.fields[getFieldId('Story Points')];
     var assignee = utils.getAssignee(issue);
@@ -37,7 +43,7 @@ var metrics = [{
     this.data[assignee][category] = this.data[assignee][category] || 0;
     this.data[assignee][category] += storyPoint;   
   },
-  doOutput: function(){
+  doOutput: function(){ // OPTIONAL custom output function
     
     var rows = [];
     var kToId = {};
